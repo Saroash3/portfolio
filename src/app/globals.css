@@ -1,26 +1,349 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+/* ------------------------------------------------------------------
+   Design system: "Terminal Green". Edit the five brand tokens here.
+   ------------------------------------------------------------------ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand tokens */
+  --tg-background: #0d1117;
+  --tg-surface: #161b22;
+  --tg-text: #e6edf3;
+  --tg-accent: #3fb950;
+  --tg-secondary: #58a6ff;
+
+  /* Derived */
+  --tg-surface-2: #1c232c;
+  --tg-muted: #9198a1; /* 6.4:1 on background, 5.8:1 on surface */
+  --tg-line: rgb(230 237 243 / 0.09);
+  --tg-line-strong: rgb(230 237 243 / 0.16);
+  --tg-glow: rgb(63 185 80 / 0.35);
+
+  /* shadcn/ui variables mapped onto the brand */
+  --background: var(--tg-background);
+  --foreground: var(--tg-text);
+  --card: var(--tg-surface);
+  --card-foreground: var(--tg-text);
+  --popover: var(--tg-surface);
+  --popover-foreground: var(--tg-text);
+  --primary: var(--tg-accent);
+  --primary-foreground: var(--tg-background);
+  --secondary: var(--tg-secondary);
+  --secondary-foreground: var(--tg-background);
+  --muted: var(--tg-surface-2);
+  --muted-foreground: var(--tg-muted);
+  --accent: var(--tg-accent);
+  --accent-foreground: var(--tg-background);
+  --destructive: #f85149;
+  --border: var(--tg-line);
+  --input: var(--tg-line-strong);
+  --ring: var(--tg-accent);
+  --radius: 0.75rem;
+
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--tg-surface);
+  --color-surface-2: var(--tg-surface-2);
+  --color-text: var(--tg-text);
+  --color-line: var(--tg-line);
+  --color-line-strong: var(--tg-line-strong);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply font-sans;
+    /* Anchor links stop below the sticky nav */
+    scroll-padding-top: 4.5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: rgb(63 185 80 / 0.3);
+    color: var(--tg-text);
+  }
+  :focus-visible {
+    outline: 2px solid var(--tg-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ------------------------------ Background ------------------------------ */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(230 237 243 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(230 237 243 / 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.mask-fade-y {
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+}
+.mask-radial {
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 30%, transparent 75%);
+}
+.mask-fade-x {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, var(--tg-accent) 10%, var(--tg-secondary) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ----------------------- Scroll reveal (CSS-driven) ----------------------
+   Content is visible by default. Only when JS has run (html.js) do
+   [data-reveal] elements start hidden, and a fail-safe reveals everything
+   after a few seconds if the observer never starts. */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.35s ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-reveal][data-shown],
+html.js.reveal-all [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Collapsed bio paragraphs stay readable when JS never runs */
+html:not(.js) [data-bio-rest] {
+  grid-template-rows: 1fr !important;
+  opacity: 1 !important;
+}
+
+/* ------------------------- Hero entrance (no JS) ------------------------- */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-in {
+  animation: hero-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+/* Transform-only entrance for the key hero text: it paints at full opacity
+   immediately, so it counts as the Largest Contentful Paint right away. */
+@keyframes hero-rise {
+  from {
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+.hero-rise {
+  animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.caret {
+  animation: caret 1.05s step-end infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(calc(-50% - var(--marquee-gap, 0px) / 2), 0, 0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+/* ---------------------------- Spotlight card ---------------------------- */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(63 185 80 / 0.12),
+    transparent 45%
+  );
+}
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(
+    300px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(63 185 80 / 0.55),
+    transparent 50%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+@media (hover: hover) and (pointer: fine) {
+  .spotlight:hover::before,
+  .spotlight:hover::after {
+    opacity: 1;
+  }
+}
+
+/* ----------------------------- Hero photo ------------------------------
+   A light travels around the photo border; small badges float nearby. */
+@property --photo-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.photo-border {
+  background: conic-gradient(
+    from var(--photo-angle),
+    rgb(63 185 80 / 0.35) 0deg,
+    rgb(88 166 255 / 0.35) 180deg,
+    #58a6ff 290deg,
+    #3fb950 340deg,
+    rgb(63 185 80 / 0.35) 360deg
+  );
+  animation: photo-spin 6s linear infinite;
+}
+@keyframes photo-spin {
+  to {
+    --photo-angle: 360deg;
+  }
+}
+.float {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: var(--fd, 0s);
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* ---------------------- Native scrolling, anchors only -------------------
+   Wheel and touchpad scrolling stay native; only in-page jumps (anchor
+   links) glide, and not for people who prefer reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* --------------------------- Reduced motion ----------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .hero-in,
+  .hero-rise,
+  .caret,
+  .pulse-ring,
+  .photo-border,
+  .float {
+    animation: none;
+  }
+  .animate-marquee {
+    animation-play-state: paused;
+  }
 }
